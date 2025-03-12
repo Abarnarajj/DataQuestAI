@@ -1,0 +1,9 @@
+langchain
+langchain_community
+pandasai
+ollama 
+streamlit
+ydata_profiling
+pdfkit
+pandas
+numpy

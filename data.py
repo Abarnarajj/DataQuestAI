@@ -8,7 +8,8 @@ import pdfkit
 import os
 
 # Configure pdfkit to use wkhtmltopdf (Update the path if needed)
-config = pdfkit.configuration(wkhtmltopdf=r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe")
+#config = pdfkit.configuration(wkhtmltopdf=r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe")
+config = pdfkit.configuration(wkhtmltopdf="/usr/bin/wkhtmltopdf")
 
 # Load the Ollama model
 llm = Ollama(model="deepseek-r1")

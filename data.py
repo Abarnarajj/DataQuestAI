@@ -4,12 +4,7 @@ import pandas as pd
 from pandasai import SmartDataframe
 from ydata_profiling import ProfileReport
 import tempfile
-import pdfkit
 import os
-
-# Ensure wkhtmltopdf is correctly set
-os.environ["PATH"] += os.pathsep + "/usr/bin"
-config = pdfkit.configuration(wkhtmltopdf="/usr/bin/wkhtmltopdf")
 
 # Load the Ollama model
 llm = Ollama(model="deepseek-r1")
@@ -37,11 +32,9 @@ if uploaded_file is not None:
     df = SmartDataframe(data, config={"llm": llm})
 
     # Download cleaned data
-    cleaned_csv = tempfile.NamedTemporaryFile(delete=False, suffix=".csv").name
+    cleaned_csv = "cleaned_data.csv"
     data.to_csv(cleaned_csv, index=False)
-    
-    with open(cleaned_csv, "rb") as file:
-        st.download_button("Download Cleaned CSV", data=file, file_name="cleaned_data.csv")
+    st.download_button("Download Cleaned CSV", data=open(cleaned_csv, "rb"), file_name="cleaned_data.csv")
 
     # User prompt for analysis
     prompt = st.text_area("Enter your prompt:")
@@ -52,7 +45,7 @@ if uploaded_file is not None:
                 st.write(df.chat(prompt))
         else:
             st.warning("Please enter a prompt!")
-    
+
     # Generate and download report button
     if st.button("Download Report"):
         with st.spinner("Generating report..."):
@@ -62,15 +55,9 @@ if uploaded_file is not None:
             tmp_html_path = tempfile.NamedTemporaryFile(delete=False, suffix=".html").name
             profile.to_file(tmp_html_path)
 
-            # Convert HTML to PDF
-            pdf_file_path = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf").name
-            pdfkit.from_file(tmp_html_path, pdf_file_path, configuration=config)
-
             # Provide download link
-            with open(pdf_file_path, "rb") as f:
-                st.download_button("Download PDF Report", data=f, file_name="data_report.pdf")
+            with open(tmp_html_path, "rb") as f:
+                st.download_button("Download HTML Report", data=f, file_name="data_report.html")
 
-            # Cleanup temp files
+            # Cleanup temp file
             os.remove(tmp_html_path)
-            os.remove(pdf_file_path)
-            os.remove(cleaned_csv)

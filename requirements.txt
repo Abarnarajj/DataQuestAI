@@ -7,3 +7,4 @@ ydata_profiling
 pdfkit
 pandas
 numpy
+wkhtmltopdf

@@ -7,10 +7,9 @@ import tempfile
 import pdfkit
 import os
 
-# Configure pdfkit to use wkhtmltopdf (Update the path if needed)
-#config = pdfkit.configuration(wkhtmltopdf=r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe")
+# Ensure wkhtmltopdf is correctly set
+os.environ["PATH"] += os.pathsep + "/usr/bin"
 config = pdfkit.configuration(wkhtmltopdf="/usr/bin/wkhtmltopdf")
-
 
 # Load the Ollama model
 llm = Ollama(model="deepseek-r1")
@@ -38,9 +37,11 @@ if uploaded_file is not None:
     df = SmartDataframe(data, config={"llm": llm})
 
     # Download cleaned data
-    cleaned_csv = "cleaned_data.csv"
+    cleaned_csv = tempfile.NamedTemporaryFile(delete=False, suffix=".csv").name
     data.to_csv(cleaned_csv, index=False)
-    st.download_button("Download Cleaned CSV", data=open(cleaned_csv, "rb"), file_name="cleaned_data.csv")
+    
+    with open(cleaned_csv, "rb") as file:
+        st.download_button("Download Cleaned CSV", data=file, file_name="cleaned_data.csv")
 
     # User prompt for analysis
     prompt = st.text_area("Enter your prompt:")
@@ -72,3 +73,4 @@ if uploaded_file is not None:
             # Cleanup temp files
             os.remove(tmp_html_path)
             os.remove(pdf_file_path)
+            os.remove(cleaned_csv)

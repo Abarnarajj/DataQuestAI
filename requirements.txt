@@ -8,3 +8,5 @@ pdfkit
 pandas
 numpy
 wkhtmltopdf
+sqlite3
+tempfile

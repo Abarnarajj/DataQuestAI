@@ -7,7 +7,7 @@ import tempfile
 import os
 
 # Load the Ollama model
-llm = Ollama(model="mistral")
+llm = Ollama(model="deepseek-r1")
 
 st.title("DataQuest AI: Conversational AI for Data Analysis")
 
